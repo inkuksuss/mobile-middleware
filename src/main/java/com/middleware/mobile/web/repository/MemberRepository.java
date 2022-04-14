@@ -1,24 +1,21 @@
 package com.middleware.mobile.web.repository;
 
 
-import com.middleware.mobile.domain.entity.Member;
+import com.middleware.mobile.domain.dto.MemberDto;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import java.sql.SQLException;
+import java.util.Optional;
 
+
+@Mapper
 @Repository
-public class MemberRepository {
+public interface MemberRepository {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    void addMember(MemberDto memberDto) throws SQLException;
 
-    public Long add(Member member) {
-        entityManager.persist(member);
-        return member.getMemberId();
-    }
+    Optional<MemberDto> findMemberByEmail(String email) throws SQLException;
 
-    public Member find(Long id) {
-        return entityManager.find(Member.class, id);
-    }
+    Optional<MemberDto> findMemberById(long id) throws SQLException;
 }

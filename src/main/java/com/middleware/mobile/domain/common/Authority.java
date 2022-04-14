@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 public enum Authority {
 
     MEMBER('M'),
+    PROFESSOR('P'),
     ADMIN('A'),
     ANONYMOUS('Y');
 

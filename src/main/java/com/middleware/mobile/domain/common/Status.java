@@ -12,7 +12,9 @@ public enum Status {
     PRIVATE("PRIVATE"),
     ONLY_FRIEND("FRIEND"),
     ACTIVE("ACTIVE"),
-    DISABLE("DISABLE");
+    DISABLE("DISABLE"),
+    DELETE("DELETE"),
+    OWNER("OWNER");
 
     private final String value;
 }

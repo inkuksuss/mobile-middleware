@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.middleware.mobile.web.repository.MemberRepository">
+
+    <insert id="addMember" parameterType="com.middleware.mobile.domain.dto.MemberDto">
+        INSERT INTO member (member_authority,
+                            member_name,
+                            member_email,
+                            member_phone,
+                            member_birthday,
+                            member_password,
+                            member_created,
+                            member_updated,
+                            member_grade,
+                            member_student_id,
+                            member_alias,
+                            member_department,
+                            state_del)
+                            VALUES (#{memberAuthority},
+                                    #{memberName},
+                                    #{memberEmail},
+                                    #{memberPhone},
+                                    #{memberBirthday},
+                                    #{memberPassword},
+                                    #{memberCreated},
+                                    #{memberUpdated},
+                                    #{memberGrade},
+                                    #{memberStudentId},
+                                    #{memberAlias},
+                                    #{memberDepartment},
+                                    #{stateDel})
+    </insert>
+
+    <select id="findMemberByEmail" parameterType="String" resultType="MemberDto">
+        SELECT * FROM member
+        WHERE member_email = #{memberEmail}
+        AND state_del = 'N'
+    </select>
+</mapper>
