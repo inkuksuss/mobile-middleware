@@ -4,8 +4,8 @@ package com.middleware.mobile.web.controller;
 import com.middleware.mobile.domain.common.Authority;
 import com.middleware.mobile.domain.dto.MemberDto;
 import com.middleware.mobile.domain.dto.SessionDto;
-import com.middleware.mobile.domain.request.AddMemberForm;
-import com.middleware.mobile.domain.request.LoginForm;
+import com.middleware.mobile.domain.request.member.AddMemberForm;
+import com.middleware.mobile.domain.request.member.LoginForm;
 import com.middleware.mobile.domain.response.ResultCode;
 import com.middleware.mobile.domain.response.ResultResponse;
 import com.middleware.mobile.web.service.MemberService;
@@ -28,7 +28,7 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResultResponse doLogin(@RequestBody LoginForm form, HttpSession httpSession) throws Exception {
+    public ResultResponse<SessionDto> doLogin(@RequestBody LoginForm form, HttpSession httpSession) throws Exception {
         MemberDto memberDto = MemberDto.from(form);
         MemberDto member = memberService.doLogin(memberDto);
 
@@ -41,13 +41,11 @@ public class MemberController {
 
         httpSession.setAttribute(Authority.MEMBER.name(), sessionDto);
 
-        log.info("aa= {}",httpSession.getAttribute(Authority.MEMBER.name()));
-
-        return new ResultResponse<>(HttpStatus.OK, ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage());
+        return new ResultResponse<>(HttpStatus.OK, ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(), sessionDto);
     }
 
     @PostMapping("/join")
-    public ResultResponse addMember(@RequestBody AddMemberForm form) throws Exception {
+    public ResultResponse<Void> addMember(@RequestBody AddMemberForm form) throws Exception {
         MemberDto memberDto = MemberDto.from(form);
         memberService.addMember(memberDto);
 

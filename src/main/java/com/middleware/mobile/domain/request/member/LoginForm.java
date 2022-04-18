@@ -1,4 +1,4 @@
-package com.middleware.mobile.domain.request;
+package com.middleware.mobile.domain.request.member;
 
 import lombok.Getter;
 

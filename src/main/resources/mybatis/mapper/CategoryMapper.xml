@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.middleware.mobile.web.repository.BoardRepository">
+
+    <insert id="addBoard" parameterType="com.middleware.mobile.domain.dto.AddBoardDto">
+        INSERT INTO member (board_title,
+                            board_body,
+                            board_created,
+                            board_updated,
+                            board_status,
+                            board_score,
+                            board_view,
+                            state_del)
+                            VALUES (#{boardTitle},
+                                    #{boardBody},
+                                    #{boardCreated},
+                                    #{boardUpdated},
+                                    #{boardStatus},
+                                    #{boardScore},
+                                    #{boardView},
+                                    #{stateDel})
+    </insert>
+
+    <update id="updateBoard" parameterType="com.middleware.mobile.domain.dto.UpdateBoardDto">
+        UPDATE
+            board
+        SET
+            board_title = #{boardTitle},
+            board_body = #{boardBody},
+            board_updated = #{boardUpdated},
+            board_status = #{boardStatus},
+            category_id = #{categoryId}
+        WHERE
+            board_id = #{boardId} AND member_id = #{memberId}
+        AND state_del = 'N'
+    </update>
+
+    <update id="deleteBoard" parameterType="com.middleware.mobile.domain.dto.DeleteBoardDto">
+        UPDATE
+            board
+        SET
+            board_updated = #{boardUpdated},
+            state_del = #{stateDel}
+        WHERE
+            board_id = #{boardId} AND member_id = #{memberId}
+    </update>
+
+    <select id="getCategoryList" parameterType="String" resultType="MemberDto">
+        SELECT * FROM member
+        WHERE member_email = #{memberEmail}
+        AND state_del = 'N'
+    </select>
+
+    <select id="findCategoryById" parameterType="Long" resultType="MemberDto">
+        SELECT * FROM member
+        WHERE member_email = #{memberEmail}
+          AND state_del = 'N'
+    </select>
+</mapper>

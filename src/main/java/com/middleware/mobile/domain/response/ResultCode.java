@@ -22,8 +22,8 @@ public enum ResultCode {
 
     INVALID_PARAMETER(7001, "INVALID_PARAMETER");
 
-    private int code;
-    private String message;
+    private final int code;
+    private final String message;
 
     ResultCode(int code, String message) {
         this.code = code;

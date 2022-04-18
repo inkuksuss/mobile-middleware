@@ -2,8 +2,8 @@ package com.middleware.mobile.domain.dto;
 
 import com.middleware.mobile.domain.common.Authority;
 import com.middleware.mobile.domain.common.Status;
-import com.middleware.mobile.domain.request.AddMemberForm;
-import com.middleware.mobile.domain.request.LoginForm;
+import com.middleware.mobile.domain.request.member.AddMemberForm;
+import com.middleware.mobile.domain.request.member.LoginForm;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,18 +13,18 @@ import java.sql.Timestamp;
 public class MemberDto {
 
     private Long memberId;
+    private short memberGrade;
     private String memberName;
     private String memberEmail;
     private String memberStudentId;
-    private short memberGrade;
     private String memberAlias;
     private String memberDepartment;
     private String memberPhone;
     private String memberStatus;
     private String memberBirthday;
+    private String memberPassword;
     private Timestamp memberCreated;
     private Timestamp memberUpdated;
-    private String memberPassword;
     private char memberAuthority;
     private char stateDel;
 
@@ -72,6 +72,7 @@ public class MemberDto {
         MemberDto memberDto = new MemberDto();
 
         memberDto.memberPassword = null;
+        memberDto.memberId = member.getMemberId();
         memberDto.memberName = member.getMemberName();
         memberDto.memberEmail = member.getMemberEmail();
         memberDto.memberStudentId = member.getMemberStudentId();
