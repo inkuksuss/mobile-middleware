@@ -9,4 +9,5 @@ public class AddBoardForm {
     private String boardTitle;
     private String boardBody;
     private String boardStatus;
+    private Long categoryId;
 }

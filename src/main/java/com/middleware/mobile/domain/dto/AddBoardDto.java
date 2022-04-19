@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 public class AddBoardDto {
     private Long boardId;
     private Long memberId;
+    private Long categoryId;
     private String boardTitle;
     private String boardBody;
     private String boardStatus;

@@ -4,58 +4,110 @@
 
 <mapper namespace="com.middleware.mobile.web.repository.BoardRepository">
 
-    <insert id="addBoard" parameterType="com.middleware.mobile.domain.dto.AddBoardDto">
-        INSERT INTO member (board_title,
-                            board_body,
-                            board_created,
-                            board_updated,
-                            board_status,
-                            board_score,
-                            board_view,
+
+    <select id="findCategoryById" parameterType="Long" resultType="com.middleware.mobile.domain.dto.CategoryDto">
+        SELECT
+            category_id,
+            member_id,
+            category_name,
+            category_status,
+            category_created,
+            category_updated
+        FROM mobile.category
+        WHERE state_del = 'N' AND categoory_id = #{categoryId}
+    </select>
+
+    <select id="getCategoryList" resultType="com.middleware.mobile.domain.dto.CategoryDto">
+        SELECT
+            category_id,
+            member_id,
+            category_name,
+            category_status,
+            category_created,
+            category_updated
+        FROM mobile.category
+        WHERE state_del = 'N'
+    </select>
+
+    <select id="getCategoryAssetList" parameterType="com.middleware.mobile.domain.dto.CategoryAssetDto" resultType="com.middleware.mobile.domain.dto.CategoryAssetDto">
+        SELECT
+            c.category_id,
+            c.member_id,
+            c.category_name,
+            c.category_status,
+            c.category_created,
+            c.category_updated,
+            b.board_id,
+            b.board_title,
+            b.board_body,
+            b.board_created,
+            b.board_updated,
+            b.board_status,
+            b.board_score,
+            b.board_view,
+            m.member_id,
+            m.member_alias
+        FROM mobile.category c
+            LEFT JOIN mobile.board b ON b.category_id = c.category_id
+            LEFT JOIN mobile.member m ON b.member_id = m.member_id
+        WHERE c.state_del = 'N' AND b.state_del = 'N' AND m.state_del = 'N'
+        <if test="categoryId != null categoryId > 0">
+            AND c.category_id = #{categoryId}
+        </if>
+        <if test="memberId != null memberId > 0">
+            AND m.member_id = #{memberId}
+        </if>
+        <if test="boardId != null boardId > 0">
+            AND b.board_id = #{boardId}
+        </if>
+        <if test="categoryName != null categoryName != ''">
+            AND c.category_name = #{categoryName}
+        </if>
+        <if test="boardStatus != null boardStatus != ''">
+            AND b.board_status = #{boardStauts}
+        </if>
+        <if test="categoryStatus != null categoryStatus != ''">
+            AND c.category_status = #{categoryStatus}
+        </if>
+    </select>
+
+
+    <insert id="addCategory" parameterType="com.middleware.mobile.domain.dto.AddCategoryDto">
+        INSERT INTO mobile.category (
+                            category_id,
+                            member_id,
+                            category_name,
+                            category_status,
+                            category_created,
+                            category_updated,
                             state_del)
-                            VALUES (#{boardTitle},
-                                    #{boardBody},
-                                    #{boardCreated},
-                                    #{boardUpdated},
-                                    #{boardStatus},
-                                    #{boardScore},
-                                    #{boardView},
+                            VALUES (#{categoryId},
+                                    #{memberId},
+                                    #{categoryName},
+                                    #{categoryStatus},
+                                    #{categoryCreated},
+                                    #{categoryUpdated},
                                     #{stateDel})
     </insert>
 
-    <update id="updateBoard" parameterType="com.middleware.mobile.domain.dto.UpdateBoardDto">
+    <update id="updateBoard" parameterType="com.middleware.mobile.domain.dto.CategoryDto">
         UPDATE
-            board
+            mobile.category
         SET
-            board_title = #{boardTitle},
-            board_body = #{boardBody},
-            board_updated = #{boardUpdated},
-            board_status = #{boardStatus},
-            category_id = #{categoryId}
+            category_name = #{categoryName},
+            category_status = #{categoryStatus},
+            category_updated = #{categoryUpdated},
         WHERE
-            board_id = #{boardId} AND member_id = #{memberId}
-        AND state_del = 'N'
+            category_id = #{categoryId} AND state_del = 'N'
     </update>
 
-    <update id="deleteBoard" parameterType="com.middleware.mobile.domain.dto.DeleteBoardDto">
+    <update id="deleteBoard" parameterType="com.middleware.mobile.domain.dto.CategoryDto">
         UPDATE
-            board
+            mobile.category
         SET
-            board_updated = #{boardUpdated},
+            category_updated = #{categoryUpdated},
             state_del = #{stateDel}
         WHERE
-            board_id = #{boardId} AND member_id = #{memberId}
+            category_id = #{categoryId} AND state_del = 'N'
     </update>
-
-    <select id="getCategoryList" parameterType="String" resultType="MemberDto">
-        SELECT * FROM member
-        WHERE member_email = #{memberEmail}
-        AND state_del = 'N'
-    </select>
-
-    <select id="findCategoryById" parameterType="Long" resultType="MemberDto">
-        SELECT * FROM member
-        WHERE member_email = #{memberEmail}
-          AND state_del = 'N'
-    </select>
 </mapper>

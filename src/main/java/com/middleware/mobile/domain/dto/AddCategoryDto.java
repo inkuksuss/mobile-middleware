@@ -2,7 +2,7 @@ package com.middleware.mobile.domain.dto;
 
 import java.sql.Timestamp;
 
-public class CategoryDto {
+public class AddCategoryDto {
 
     private Long categoryId;
     private Long memberId;
@@ -10,4 +10,5 @@ public class CategoryDto {
     private String categoryStatus;
     private Timestamp categoryCreated;
     private Timestamp categoryUpdated;
+    private char stateDel;
 }

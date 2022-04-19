@@ -53,11 +53,13 @@ public class BoardController {
 
     private AddBoardDto createAddBoardDto(AddBoardForm form) {
         AddBoardDto addBoardDto = new AddBoardDto();
+        Timestamp currentTime = new Timestamp(System.currentTimeMillis());
         addBoardDto.setBoardTitle(form.getBoardTitle());
         addBoardDto.setBoardBody(form.getBoardBody());
         addBoardDto.setBoardStatus(form.getBoardStatus());
-        addBoardDto.setBoardCreated(new Timestamp(System.currentTimeMillis()));
-        addBoardDto.setBoardUpdated(new Timestamp(System.currentTimeMillis()));
+        addBoardDto.setCategoryId(form.getCategoryId());
+        addBoardDto.setBoardCreated(currentTime);
+        addBoardDto.setBoardUpdated(currentTime);
         addBoardDto.setBoardScore(0);
         addBoardDto.setBoardView(0);
         addBoardDto.setStateDel(Delete.EXIST.getValue());

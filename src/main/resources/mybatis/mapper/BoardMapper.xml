@@ -5,13 +5,16 @@
 <mapper namespace="com.middleware.mobile.web.repository.BoardRepository">
 
     <insert id="addBoard" parameterType="com.middleware.mobile.domain.dto.AddBoardDto">
-        INSERT INTO member (board_title,
+        INSERT INTO mobile.board
+                            (board_title,
                             board_body,
                             board_created,
                             board_updated,
                             board_status,
                             board_score,
                             board_view,
+                            member_id,
+                            category_id,
                             state_del)
                             VALUES (#{boardTitle},
                                     #{boardBody},
@@ -20,12 +23,14 @@
                                     #{boardStatus},
                                     #{boardScore},
                                     #{boardView},
+                                    #{memberId},
+                                    #{catgoryId},
                                     #{stateDel})
     </insert>
 
     <update id="updateBoard" parameterType="com.middleware.mobile.domain.dto.UpdateBoardDto">
         UPDATE
-            board
+            mobile.board
         SET
             board_title = #{boardTitle},
             board_body = #{boardBody},
@@ -39,7 +44,7 @@
 
     <update id="deleteBoard" parameterType="com.middleware.mobile.domain.dto.DeleteBoardDto">
         UPDATE
-            board
+            mobile.board
         SET
             board_updated = #{boardUpdated},
             state_del = #{stateDel}
