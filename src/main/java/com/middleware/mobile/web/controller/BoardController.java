@@ -2,21 +2,23 @@ package com.middleware.mobile.web.controller;
 
 import com.middleware.mobile.domain.common.Authority;
 import com.middleware.mobile.domain.common.Delete;
-import com.middleware.mobile.domain.dto.AddBoardDto;
-import com.middleware.mobile.domain.dto.DeleteBoardDto;
-import com.middleware.mobile.domain.dto.SessionDto;
-import com.middleware.mobile.domain.dto.UpdateBoardDto;
+import com.middleware.mobile.domain.dto.*;
 import com.middleware.mobile.domain.request.board.AddBoardForm;
+import com.middleware.mobile.domain.request.board.GetBoardListForm;
 import com.middleware.mobile.domain.request.board.UpdateBoardForm;
 import com.middleware.mobile.domain.response.ResultCode;
 import com.middleware.mobile.domain.response.ResultResponse;
+import com.middleware.mobile.web.exception.custom.BoardNotFoundException;
 import com.middleware.mobile.web.service.BoardService;
+import com.middleware.mobile.web.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.sql.Timestamp;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/board")
@@ -24,16 +26,29 @@ import java.sql.Timestamp;
 public class BoardController {
 
     private final BoardService boardService;
+    private final CategoryService categoryService;
 
     @GetMapping("/about/{categoryName}")
-    public ResultResponse<Void> getBoardList(@PathVariable String categoryName) throws Exception {
+    public ResultResponse<List<BoardDto>> getBoardList(@PathVariable String categoryName, @RequestBody GetBoardListForm form) throws Exception {
 
-        if (categoryName.equals("common")) {
+        CategoryAssetDto categoryAssetDto = CategoryAssetDto.of(form, categoryName);
 
-        } else if (categoryName.equals("notice")) {
+        if (categoryName.equals("common") || categoryName.equals("notice") || categoryName.equals("share")) {
+            List<BoardDto> boardList = boardService.getBoardList(categoryAssetDto);
 
-        } else if (categoryName.equals("share")) {
+            return new ResultResponse<>(HttpStatus.OK, ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(), boardList);
+        } else {
+            return new ResultResponse<>(HttpStatus.NOT_FOUND, ResultCode.PAGE_NOT_FOUND.getCode(), ResultCode.PAGE_NOT_FOUND.getMessage());
+        }
+    }
 
+    @GetMapping("/about/{categoryName}/{boardId}")
+    public ResultResponse<CategoryAssetDto> getBoard(@PathVariable String categoryName, @PathVariable Long boardId) throws Exception {
+        CategoryAssetDto categoryAssetDto = CategoryAssetDto.of(categoryName, boardId);
+        BoardDto boardDto = boardService.getBoard(categoryAssetDto).orElseThrow(() -> new BoardNotFoundException("존재하지 않는 게시판입니다."));
+        if () {
+
+        }
         } else {
             return new ResultResponse<>(HttpStatus.NOT_FOUND, ResultCode.PAGE_NOT_FOUND.getCode(), ResultCode.PAGE_NOT_FOUND.getMessage());
         }

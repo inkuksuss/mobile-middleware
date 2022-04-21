@@ -14,7 +14,7 @@
             category_created,
             category_updated
         FROM mobile.category
-        WHERE state_del = 'N' AND categoory_id = #{categoryId}
+        WHERE state_del = 'N' AND category_id = #{categoryId}
     </select>
 
     <select id="getCategoryList" resultType="com.middleware.mobile.domain.dto.CategoryDto">
@@ -28,6 +28,8 @@
         FROM mobile.category
         WHERE state_del = 'N'
     </select>
+
+    <select id="getBoard" parameterType=""
 
     <select id="getCategoryAssetList" parameterType="com.middleware.mobile.domain.dto.CategoryAssetDto" resultType="com.middleware.mobile.domain.dto.CategoryAssetDto">
         SELECT
@@ -46,29 +48,43 @@
             b.board_score,
             b.board_view,
             m.member_id,
-            m.member_alias
+            m.member_alias.
+            (SELECT count(*) FROM c
+                LEFT JOIN b ON b.category_id = c.category_id
+                LEFT JOIN m ON b.member_id = m.member_id
+                WHERE c.state_del = 'N' AND b.state_del = 'N' AND m.state_del = 'N')
         FROM mobile.category c
             LEFT JOIN mobile.board b ON b.category_id = c.category_id
             LEFT JOIN mobile.member m ON b.member_id = m.member_id
         WHERE c.state_del = 'N' AND b.state_del = 'N' AND m.state_del = 'N'
-        <if test="categoryId != null categoryId > 0">
+        <if test="categoryId != null and categoryId > 0">
             AND c.category_id = #{categoryId}
         </if>
-        <if test="memberId != null memberId > 0">
+        <if test="memberId != null and memberId > 0">
             AND m.member_id = #{memberId}
         </if>
-        <if test="boardId != null boardId > 0">
+        <if test="boardId != null and boardId > 0">
             AND b.board_id = #{boardId}
         </if>
-        <if test="categoryName != null categoryName != ''">
+        <if test="categoryName != null and categoryName != ''">
             AND c.category_name = #{categoryName}
         </if>
-        <if test="boardStatus != null boardStatus != ''">
+        <if test="boardStatus != null and boardStatus != ''">
+            AND m.member_status = #{memberStatus}
+        </if>
+        <if test="boardStatus != null and boardStatus != ''">
             AND b.board_status = #{boardStauts}
         </if>
-        <if test="categoryStatus != null categoryStatus != ''">
+        <if test="categoryStatus != null and categoryStatus != ''">
             AND c.category_status = #{categoryStatus}
         </if>
+        <if test="keyword != null and categoryStatus != ''">
+            AND (b.board_title LIKE CONCAT('%', #{keyword}, '%') OR b.board_body LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
+        <if test="rowCount != null page != null and rowCount > 0 and page > 0">
+            LIMIT #{rowCount} OFFSET #{page}
+        </if>
+        ORDER BY b.board_updated DESC;
     </select>
 
 

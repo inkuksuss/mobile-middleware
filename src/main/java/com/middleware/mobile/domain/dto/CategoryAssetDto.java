@@ -1,5 +1,7 @@
 package com.middleware.mobile.domain.dto;
 
+import com.middleware.mobile.domain.common.Status;
+import com.middleware.mobile.domain.request.board.GetBoardListForm;
 import lombok.Getter;
 
 import java.sql.Timestamp;
@@ -7,7 +9,7 @@ import java.sql.Timestamp;
 @Getter
 public class CategoryAssetDto {
 
-    private Long BoardId;
+    private Long boardId;
     private String categoryName;
     private String boardTitle;
     private String boardBody;
@@ -38,4 +40,35 @@ public class CategoryAssetDto {
     private String categoryStatus;
     private Timestamp categoryCreated;
     private Timestamp categoryUpdated;
+
+    private String keyword;
+    private int page;
+    private int rowCount;
+    private int totalCount;
+
+    private CategoryAssetDto() {}
+
+    public static CategoryAssetDto of(GetBoardListForm getBoardListForm, String categoryName) {
+        CategoryAssetDto categoryAssetDto = new CategoryAssetDto();
+        categoryAssetDto.keyword = categoryAssetDto.getKeyword();
+        categoryAssetDto.page = categoryAssetDto.getPage() > 0 ? categoryAssetDto.getPage() : 1;
+        categoryAssetDto.rowCount = categoryAssetDto.getRowCount() > 0 ? categoryAssetDto.getRowCount() : 10;
+        categoryAssetDto.categoryName = categoryName;
+        categoryAssetDto.categoryStatus = Status.PUBLIC.getValue();
+        categoryAssetDto.boardStatus = Status.PUBLIC.getValue();
+        categoryAssetDto.memberStatus = Status.PUBLIC.getValue();
+
+        return categoryAssetDto;
+    }
+
+    public static CategoryAssetDto of(String categoryName, Long boardId) {
+        CategoryAssetDto categoryAssetDto = new CategoryAssetDto();
+        categoryAssetDto.boardId = boardId;
+        categoryAssetDto.categoryName = categoryName;
+        categoryAssetDto.categoryStatus = Status.PUBLIC.getValue();
+        categoryAssetDto.boardStatus = Status.PUBLIC.getValue();
+        categoryAssetDto.memberStatus = Status.PUBLIC.getValue();
+
+        return categoryAssetDto;
+    }
 }

@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 @Getter
 public class BoardDto {
 
-    private Long BoardId;
+    private Long boardId;
     private Long categoryId;
     private Long memberId;
     private String memberAlias;
@@ -19,4 +19,24 @@ public class BoardDto {
     private int boardScore;
     private int boardView;
     private int stateDel;
+
+    public BoardDto() {}
+
+    public static BoardDto from(CategoryAssetDto categoryAssetDto) {
+        BoardDto boardDto = new BoardDto();
+        boardDto.boardId = categoryAssetDto.getBoardId();
+        boardDto.categoryId = categoryAssetDto.getCategoryId();
+        boardDto.memberId = categoryAssetDto.getMemberId();
+        boardDto.memberAlias = categoryAssetDto.getMemberAlias();
+        boardDto.categoryName = categoryAssetDto.getCategoryName();
+        boardDto.boardTitle = categoryAssetDto.getBoardTitle();
+        boardDto.boardBody = categoryAssetDto.getBoardBody();
+        boardDto.boardUpdated = categoryAssetDto.getBoardUpdated();
+        boardDto.boardStatus = categoryAssetDto.getBoardStatus();
+        boardDto.boardScore = categoryAssetDto.getBoardScore();
+        boardDto.boardView = categoryAssetDto.getBoardView();
+        boardDto.stateDel = categoryAssetDto.getBoardStateDel();
+
+        return boardDto;
+    }
 }

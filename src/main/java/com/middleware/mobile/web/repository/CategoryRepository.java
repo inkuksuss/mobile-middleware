@@ -1,6 +1,7 @@
 package com.middleware.mobile.web.repository;
 
 import com.middleware.mobile.domain.dto.BoardDto;
+import com.middleware.mobile.domain.dto.CategoryAssetDto;
 import com.middleware.mobile.domain.dto.CategoryDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -18,7 +19,7 @@ public interface CategoryRepository {
 
     List<CategoryDto> getCategoryList() throws SQLException;
 
-    List<BoardDto> getCategoryAssetList() throws SQLException;
+    List<CategoryAssetDto> getCategoryAssetList(CategoryAssetDto categoryAssetDto) throws SQLException;
 
     void addCategory() throws SQLException;
 
