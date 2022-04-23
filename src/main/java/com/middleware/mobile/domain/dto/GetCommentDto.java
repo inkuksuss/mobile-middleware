@@ -25,6 +25,8 @@ public class GetCommentDto {
     private char memberAuthority;
     private short memberGrade;
 
+    private Long boardMemberId;
+
     public GetCommentDto() {}
 
     public GetCommentDto(Long memberId) {
@@ -34,5 +36,12 @@ public class GetCommentDto {
     public GetCommentDto(Long boardId, Long memberId) {
         this.boardId = boardId;
         this.memberId = memberId;
+    }
+
+    public static GetCommentDto createGetCommentDtoOfOwner(Long boardId, Long boardMemberId) {
+        GetCommentDto getCommentDto = new GetCommentDto();
+        getCommentDto.boardId = boardId;
+        getCommentDto.boardMemberId = boardMemberId;
+        return getCommentDto;
     }
 }

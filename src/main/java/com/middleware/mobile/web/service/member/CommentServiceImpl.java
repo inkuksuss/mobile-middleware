@@ -3,15 +3,23 @@ package com.middleware.mobile.web.service.member;
 import com.middleware.mobile.domain.dto.BoardDto;
 import com.middleware.mobile.domain.dto.CommentDto;
 import com.middleware.mobile.domain.dto.GetCommentDto;
+import com.middleware.mobile.domain.dto.SessionDto;
+import com.middleware.mobile.domain.response.ResultCode;
+import com.middleware.mobile.domain.response.ResultResponse;
 import com.middleware.mobile.web.exception.custom.BoardNotFoundException;
 import com.middleware.mobile.web.repository.BoardRepository;
 import com.middleware.mobile.web.repository.CommentRepository;
 import com.middleware.mobile.web.service.CommentService;
+import com.middleware.mobile.web.utils.MemberAuthenticationUtils;
+import com.middleware.mobile.web.utils.MobileValidationUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.List;
+
+import static com.middleware.mobile.web.utils.MobileValidationUtils.*;
 
 @Service
 @RequiredArgsConstructor
@@ -21,25 +29,28 @@ public class CommentServiceImpl implements CommentService {
     private final BoardRepository boardRepository;
 
     @Override
-    public List<CommentDto> getCommentList(GetCommentDto getCommentDto) throws SQLException {
+    public ResultResponse<List<CommentDto>> getCommentList(GetCommentDto getCommentDto) throws SQLException {
         BoardDto boardDto = boardRepository.findBoardById(getCommentDto.getBoardId()).orElseThrow(() -> new BoardNotFoundException("존재하지 않는 게시판입니다."));
 
-        if (getCommentDto.getMemberId() != null && getCommentDto.getMemberId() > 0) {
-            if (boardDto.getMemberId().equals(getCommentDto.getMemberId())) {
-                return commentRepository.getCommentListByOwner(getCommentDto);
+        if (isExist(getCommentDto.getBoardMemberId())) {
+            if (boardDto.getMemberId().equals(getCommentDto.getBoardMemberId())) {
+                List<CommentDto> commentListByOwner = commentRepository.getCommentListByOwner(getCommentDto);
+                return new ResultResponse<>(HttpStatus.OK, ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(), commentListByOwner);
             } else {
                 throw new IllegalArgumentException("적절하지 않은 요청입니다.");
             }
+        } else {
+            List<CommentDto> commentList = commentRepository.getCommentList(getCommentDto);
+            return new ResultResponse<>(HttpStatus.OK, ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(), commentList);
         }
-        return commentRepository.getCommentList(getCommentDto);
     };
 
     @Override
-    public List<CommentDto> addComment(CommentDto commentDto) throws SQLException {
+    public ResultResponse<List<CommentDto>> addComment(CommentDto commentDto) throws SQLException {
         commentRepository.addComment(commentDto);
         GetCommentDto getCommentDto = createGetCommentDto(commentDto);
 
-        return this.getCommentList(new GetCommentDto(commentDto.getBoardId(), commentDto.getMemberId()));
+        return getCommentList(new GetCommentDto(commentDto.getBoardId()));
     }
 
     private GetCommentDto createGetCommentDto(CommentDto commentDto) {
@@ -50,16 +61,16 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<CommentDto> updateComment(CommentDto commentDto) throws SQLException {
+    public ResultResponse<List<CommentDto>> updateComment(CommentDto commentDto) throws SQLException {
         commentRepository.updateComment(commentDto);
 
-        return this.getCommentList(new GetCommentDto(commentDto.getBoardId(), commentDto.getMemberId()));
+        return getCommentList(new GetCommentDto(commentDto.getBoardId()));
     };
 
     @Override
-    public List<CommentDto> deleteComment(CommentDto commentDto) throws SQLException {
+    public ResultResponse<List<CommentDto>> deleteComment(CommentDto commentDto) throws SQLException {
         commentRepository.deleteComment(commentDto);
 
-        return this.getCommentList(new GetCommentDto(commentDto.getBoardId(), commentDto.getMemberId()));
+        return getCommentList(new GetCommentDto(commentDto.getBoardId()));
     };
 }

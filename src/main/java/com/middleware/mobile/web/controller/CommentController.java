@@ -1,18 +1,14 @@
 package com.middleware.mobile.web.controller;
 
-
-import com.middleware.mobile.domain.common.Authority;
 import com.middleware.mobile.domain.dto.CommentDto;
 import com.middleware.mobile.domain.dto.GetCommentDto;
 import com.middleware.mobile.domain.dto.SessionDto;
 import com.middleware.mobile.domain.request.comment.AddCommentForm;
 import com.middleware.mobile.domain.request.comment.UpdateCommentForm;
-import com.middleware.mobile.domain.response.ResultCode;
 import com.middleware.mobile.domain.response.ResultResponse;
 import com.middleware.mobile.web.service.CommentService;
 import com.middleware.mobile.web.utils.MemberAuthenticationUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -33,12 +29,10 @@ public class CommentController {
 
         if (MemberAuthenticationUtils.isLogin(httpSession)) {
             SessionDto loginMember = MemberAuthenticationUtils.getLoginMember(httpSession);
-            getCommentDto.setMemberId(loginMember.getMemberId());
+            getCommentDto.setBoardMemberId(loginMember.getMemberId());
         }
 
-        List<CommentDto> commentDtoList = commentService.getCommentList(getCommentDto);
-
-        return new ResultResponse<>(HttpStatus.OK, ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(), commentDtoList);
+        return commentService.getCommentList(getCommentDto);
     };
 
     @PostMapping("/add/{boardId}")
@@ -47,9 +41,7 @@ public class CommentController {
         SessionDto loginMember = MemberAuthenticationUtils.getLoginMember(httpSession);
 
         CommentDto commentDto = CommentDto.createAddCommentDto(form, loginMember.getMemberId());
-        List<CommentDto> commentDtoList = commentService.addComment(commentDto);
-
-        return new ResultResponse<>(HttpStatus.OK, ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(), commentDtoList);
+        return commentService.addComment(commentDto);
     };
 
     @PostMapping("/update/{commentId}")
@@ -60,9 +52,7 @@ public class CommentController {
         form.setMemberId(loginMember.getMemberId());
         CommentDto commentDto = CommentDto.createUpdateCommentDto(form);
 
-        List<CommentDto> commentDtoList = commentService.updateComment(commentDto);
-
-        return new ResultResponse<>(HttpStatus.OK, ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(), commentDtoList);
+        return commentService.updateComment(commentDto);
     };
 
     @PostMapping("/delete/{commentId}")
@@ -70,8 +60,6 @@ public class CommentController {
         SessionDto loginMember = MemberAuthenticationUtils.getLoginMember(httpSession);
         CommentDto commentDto = CommentDto.createDeleteCommentDto(commentId, loginMember.getMemberId());
 
-        List<CommentDto> commentDtoList = commentService.deleteComment(commentDto);
-
-        return new ResultResponse<>(HttpStatus.OK, ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(), commentDtoList);
+        return commentService.deleteComment(commentDto);
     };
 }
