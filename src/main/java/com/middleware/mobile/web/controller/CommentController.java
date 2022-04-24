@@ -44,6 +44,15 @@ public class CommentController {
         return commentService.addComment(commentDto);
     };
 
+    @PostMapping("/add/child/{boardId}")
+    public ResultResponse<List<CommentDto>> addChildComment(@RequestBody AddCommentForm form, @PathVariable Long boardId, HttpSession httpSession) throws Exception {
+
+        SessionDto loginMember = MemberAuthenticationUtils.getLoginMember(httpSession);
+
+        CommentDto commentDto = CommentDto.createAddCommentDto(form, loginMember.getMemberId());
+        return commentService.addComment(commentDto);
+    };
+
     @PostMapping("/update/{commentId}")
     public ResultResponse<List<CommentDto>> updateComment(@RequestBody UpdateCommentForm form, @PathVariable Long commentId, HttpSession httpSession) throws Exception {
         SessionDto loginMember = MemberAuthenticationUtils.getLoginMember(httpSession);

@@ -8,7 +8,6 @@ import com.middleware.mobile.domain.request.board.GetBoardListForm;
 import com.middleware.mobile.domain.request.board.UpdateBoardForm;
 import com.middleware.mobile.domain.response.ResultCode;
 import com.middleware.mobile.domain.response.ResultResponse;
-import com.middleware.mobile.web.exception.custom.BoardNotFoundException;
 import com.middleware.mobile.web.service.BoardService;
 import com.middleware.mobile.web.service.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Optional;
+
+import static com.middleware.mobile.web.utils.MemberAuthenticationUtils.*;
 
 @RestController
 @RequestMapping("/board")
@@ -29,41 +29,43 @@ public class BoardController {
     private final CategoryService categoryService;
 
     @GetMapping("/about/{categoryName}")
-    public ResultResponse<List<BoardDto>> getBoardList(@PathVariable String categoryName, @RequestBody GetBoardListForm form) throws Exception {
+    public ResultResponse<List<BoardDto>> getBoardList(@PathVariable String categoryName, @RequestBody GetBoardListForm form, HttpSession httpSession) throws Exception {
 
-        CategoryAssetDto categoryAssetDto = CategoryAssetDto.of(form, categoryName);
+        CategoryAssetDto categoryAssetDto;
 
-        if (categoryName.equals("common") || categoryName.equals("notice") || categoryName.equals("share")) {
-            List<BoardDto> boardList = boardService.getBoardList(categoryAssetDto);
-
-            return new ResultResponse<>(HttpStatus.OK, ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(), boardList);
+        if (isLogin(httpSession)) {
+            Long loginMemberId = getLoginMemberId(httpSession);
+            categoryAssetDto = CategoryAssetDto.of(form, categoryName, loginMemberId);
         } else {
-            return new ResultResponse<>(HttpStatus.NOT_FOUND, ResultCode.PAGE_NOT_FOUND.getCode(), ResultCode.PAGE_NOT_FOUND.getMessage());
+            categoryAssetDto = CategoryAssetDto.of(form, categoryName, null);
         }
+
+        return boardService.getBoardList(categoryAssetDto);
     }
 
     @GetMapping("/about/{categoryName}/{boardId}")
-    public ResultResponse<CategoryAssetDto> getBoard(@PathVariable String categoryName, @PathVariable Long boardId) throws Exception {
-        CategoryAssetDto categoryAssetDto = CategoryAssetDto.of(categoryName, boardId);
-        BoardDto boardDto = boardService.getBoard(categoryAssetDto).orElseThrow(() -> new BoardNotFoundException("존재하지 않는 게시판입니다."));
-        if () {
+    public ResultResponse<BoardDto> getBoard(@PathVariable String categoryName, @PathVariable Long boardId, HttpSession httpSession) throws Exception {
+        BoardDto boardDto = new BoardDto();
+        boardDto.setBoardId(boardId);
+        boardDto.setCategoryName(categoryName);
 
+        if (isLogin(httpSession)) {
+            Long loginMemberId = getLoginMemberId(httpSession);
+            boardDto.setReqMemberId(loginMemberId);
         }
-        } else {
-            return new ResultResponse<>(HttpStatus.NOT_FOUND, ResultCode.PAGE_NOT_FOUND.getCode(), ResultCode.PAGE_NOT_FOUND.getMessage());
-        }
+
+        return boardService.getBoard(boardDto);
     }
 
     @PostMapping("/add")
     public ResultResponse<Long> addBoard(@RequestBody AddBoardForm form, HttpSession httpSession) throws Exception {
 
-        SessionDto sessionDto = (SessionDto) httpSession.getAttribute(Authority.MEMBER.name());
+        Long loginMemberId = getLoginMemberId(httpSession);
 
         AddBoardDto addBoardDto = createAddBoardDto(form);
-        addBoardDto.setMemberId(sessionDto.getMemberId());
-        boardService.addBoard(addBoardDto);
+        addBoardDto.setMemberId(loginMemberId);
 
-        return new ResultResponse<>(HttpStatus.OK, ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(), addBoardDto.getBoardId());
+        return boardService.addBoard(addBoardDto);
     }
 
     private AddBoardDto createAddBoardDto(AddBoardForm form) {
@@ -91,9 +93,7 @@ public class BoardController {
         updateBoardDto.setBoardId(boardId);
         updateBoardDto.setMemberId(sessionDto.getMemberId());
 
-        boardService.updateBoard(updateBoardDto);
-
-        return new ResultResponse<>(HttpStatus.OK, ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(), updateBoardDto.getBoardId());
+        return boardService.updateBoard(updateBoardDto);
     }
 
     private UpdateBoardDto createUpdateBoardDto(UpdateBoardForm form) {
@@ -113,8 +113,7 @@ public class BoardController {
         SessionDto sessionDto = (SessionDto) httpSession.getAttribute(Authority.MEMBER.name());
 
         DeleteBoardDto deleteBoardDto = new DeleteBoardDto(boardId, sessionDto.getMemberId());
-        boardService.deleteBoard(deleteBoardDto);
 
-        return new ResultResponse<>(HttpStatus.OK, ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage());
+        return boardService.deleteBoard(deleteBoardDto);
     }
 }

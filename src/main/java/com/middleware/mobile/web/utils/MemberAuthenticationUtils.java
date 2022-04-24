@@ -12,15 +12,24 @@ public class MemberAuthenticationUtils {
     private MemberAuthenticationUtils() {}
 
     public static boolean isLogin(HttpSession session) {
-        if (session == null) {
-            return false;
-        } else {
-            return true;
-        }
+        return session != null;
     }
 
     public static SessionDto getLoginMember(HttpSession session) {
-        return (SessionDto) session.getAttribute(Authority.MEMBER.name());
+        if (isLogin(session)) {
+            return (SessionDto) session.getAttribute(Authority.MEMBER.name());
+        } else {
+            throw new IllegalStateException("인증되지 않은 유저입니다.");
+        }
+    }
+
+    public static Long getLoginMemberId(HttpSession session) {
+        if (isLogin(session)) {
+            SessionDto sessionDto = (SessionDto) session.getAttribute(Authority.MEMBER.name());
+            return sessionDto.getMemberId();
+        } else {
+            throw new IllegalStateException("인증되지 않은 유저입니다.");
+        }
     }
 
 }

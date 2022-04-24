@@ -1,21 +1,20 @@
 package com.middleware.mobile.web.service;
 
 import com.middleware.mobile.domain.dto.*;
-import com.middleware.mobile.web.repository.BoardRepository;
+import com.middleware.mobile.domain.response.ResultResponse;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 
 public interface BoardService {
 
-    List<BoardDto> getBoardList(CategoryAssetDto categoryAssetDto) throws SQLException;
+    ResultResponse<List<BoardDto>> getBoardList(CategoryAssetDto categoryAssetDto) throws SQLException;
 
-    BoardDto getBoard() throws SQLException;
+    ResultResponse<BoardDto> getBoard(BoardDto boardDto) throws SQLException;
 
-    void addBoard(AddBoardDto addBoardDto) throws SQLException;
+    ResultResponse<Long> addBoard(AddBoardDto addBoardDto) throws SQLException;
 
-    void updateBoard(UpdateBoardDto updateBoardDto) throws SQLException;
+    ResultResponse<Long> updateBoard(UpdateBoardDto updateBoardDto) throws SQLException;
 
-    void deleteBoard(DeleteBoardDto deleteBoardDto) throws SQLException;
+    ResultResponse<Void> deleteBoard(DeleteBoardDto deleteBoardDto) throws SQLException;
 }

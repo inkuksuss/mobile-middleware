@@ -9,7 +9,6 @@
             c.comment_id,
             c.board_id,
             c.member_id,
-            c.parent_id,
             c.comment_body,
             c.comment_status,
             c.comment_created,
@@ -20,15 +19,14 @@
             m.member_grade
         FROM mobile.comment c
         INNER JOIN mobile.member m ON c.member_id = m.member_id
-        WHERE c.state_del = 'N'
-        <choose>
-            <when test="memberId != null and memberId > 0">
-                AND (c.comment_status = 'PUBLIC' OR (c.comment_status = 'PRIVATE' AND c.member_id = #{memberId}))
-            </when>
-            <otherwise>
-                AND c.comment_status = 'PUBLIC'
-            </otherwise>
-        </choose>
+        WHERE c.state_del = 'N' AND m.state_del = 'N'
+        AND c.comment_status = 'PUBLIC'
+        <if test="boardId != null and boardId > 0">
+            AND c.board_id = #{boardId}
+        </if>
+        <if test="parentId != null and parentId > 0">
+            AND c.parent_id = #{parentId}
+        </if>
     </select>
 
     <select id="getCommentListByOwner" parameterType="com.middleware.mobile.domain.dto.GetCommentDto" resultType="com.middleware.mobile.domain.dto.CommentDto">
@@ -36,7 +34,6 @@
         c.comment_id,
         c.board_id,
         c.member_id,
-        c.parent_id,
         c.comment_body,
         c.comment_status,
         c.comment_created,
@@ -49,5 +46,78 @@
         INNER JOIN mobile.member m ON c.member_id = m.member_id
         WHERE c.state_del = 'N'
         AND (c.comment_status = 'PUBLIC' OR c.comment_status = 'PRIVATE')
+        <if test="boardId != null and boardId > 0">
+            AND c.board_id = #{boardId}
+        </if>
     </select>
+
+    <insert id="addComment" parameterType="com.middleware.mobile.domain.dto.CommentDto">
+        INSERT INTO mobile.comment (board_id,
+                                    member_id,
+                                    comment_body,
+                                    comment_created,
+                                    comment_updated,
+                                    comment_status,
+                                    state_del,
+                                    <if test="parentId != null and parentId > 0">
+                                        parent_id,
+                                    </if>
+                                    child_count
+                                    ) VALUES (
+                                              #{boardId},
+                                              #{memberId},
+                                              #{commentBody},
+                                              #{commentCreated},
+                                              #{commentUpdated},
+                                              #{commentStatus},
+                                              #{stateDel},
+                                              <if test="parentId != null and parentId > 0">
+                                                #{parentId},
+                                              </if>
+                                              #{childCount})
+    </insert>
+
+    <update id="updateComment" parameterType="com.middleware.mobile.domain.dto.CommentDto">
+        UPDATE mobile.comment
+        SET (
+        <if test="commentBody != null and commentBody != ''">
+            comment_body = #{commentBody},
+        </if>
+        <if test="commentUpdated != null">
+            comment_updated = #{commentUpdated},
+        </if>
+        <if test="commentStatus != null and commentStatus != ''">
+            comment_status = #{commentStatus},
+        </if>
+        WHERE comment_id = #{commentId}
+        AND member_id = #{memberId}
+        AND state_del = 'N';
+    </update>
+
+    <update id="deleteComment" parameterType="com.middleware.mobile.domain.dto.CommentDto">
+        UPDATE mobile.comment
+        SET (
+            comment_updated = #{commentUpdated},
+            state_del = #{stateDel}
+        )
+        WHERE comment_id = #{commentId}
+        AND member_id = #{memberId}
+        AND state_del = 'N';
+    </update>
+
+    <update id="increaseChildCount" parameterType="com.middleware.mobile.domain.dto.CommentDto">
+        UPDATE mobile.comment
+        SET child_count = child_count + 1
+        WHERE comment_id = #{commentId}
+        AND member_id = #{memberId}
+        AND state_del = 'N';
+    </update>
+
+    <update id="decreaseChildCount" parameterType="com.middleware.mobile.domain.dto.CommentDto">
+        UPDATE mobile.comment
+        SET child_count = child_count - 1
+        WHERE comment_id = #{commentId}
+          AND member_id = #{memberId}
+          AND state_del = 'N';
+    </update>
 </mapper>

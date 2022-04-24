@@ -2,9 +2,13 @@ package com.middleware.mobile.domain.dto;
 
 import com.middleware.mobile.domain.common.Status;
 import com.middleware.mobile.domain.request.board.GetBoardListForm;
+import com.middleware.mobile.web.utils.MobileValidationUtils;
 import lombok.Getter;
+import org.springframework.lang.Nullable;
 
 import java.sql.Timestamp;
+
+import static com.middleware.mobile.web.utils.MobileValidationUtils.*;
 
 @Getter
 public class CategoryAssetDto {
@@ -17,7 +21,7 @@ public class CategoryAssetDto {
     private String boardStatus;
     private int boardScore;
     private int boardView;
-    private int boardStateDel;
+    private char boardStateDel;
 
     private Long memberId;
     private short memberGrade;
@@ -46,9 +50,11 @@ public class CategoryAssetDto {
     private int rowCount;
     private int totalCount;
 
+    private Long reqMemberId;
+
     private CategoryAssetDto() {}
 
-    public static CategoryAssetDto of(GetBoardListForm getBoardListForm, String categoryName) {
+    public static CategoryAssetDto of(GetBoardListForm getBoardListForm, String categoryName, @Nullable Long reqMemberId) {
         CategoryAssetDto categoryAssetDto = new CategoryAssetDto();
         categoryAssetDto.keyword = categoryAssetDto.getKeyword();
         categoryAssetDto.page = categoryAssetDto.getPage() > 0 ? categoryAssetDto.getPage() : 1;
@@ -57,17 +63,9 @@ public class CategoryAssetDto {
         categoryAssetDto.categoryStatus = Status.PUBLIC.getValue();
         categoryAssetDto.boardStatus = Status.PUBLIC.getValue();
         categoryAssetDto.memberStatus = Status.PUBLIC.getValue();
-
-        return categoryAssetDto;
-    }
-
-    public static CategoryAssetDto of(String categoryName, Long boardId) {
-        CategoryAssetDto categoryAssetDto = new CategoryAssetDto();
-        categoryAssetDto.boardId = boardId;
-        categoryAssetDto.categoryName = categoryName;
-        categoryAssetDto.categoryStatus = Status.PUBLIC.getValue();
-        categoryAssetDto.boardStatus = Status.PUBLIC.getValue();
-        categoryAssetDto.memberStatus = Status.PUBLIC.getValue();
+        if (isExist(reqMemberId)) {
+            categoryAssetDto.reqMemberId = reqMemberId;
+        }
 
         return categoryAssetDto;
     }

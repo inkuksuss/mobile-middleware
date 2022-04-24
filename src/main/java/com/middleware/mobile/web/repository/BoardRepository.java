@@ -17,11 +17,11 @@ public interface BoardRepository {
 
     List<BoardDto> getBoardList() throws SQLException;
 
-    Optional<BoardDto> findBoardById(Long boardId) throws SQLException;
+    Optional<BoardDto> findBoardById(BoardDto boardDto) throws SQLException;
 
-    void addBoard(AddBoardDto addBoardDto) throws SQLException;
+    int addBoard(AddBoardDto addBoardDto) throws SQLException;
 
-    void updateBoard(UpdateBoardDto updateBoardDto) throws SQLException;
+    int updateBoard(UpdateBoardDto updateBoardDto) throws SQLException;
 
-    void deleteBoard(DeleteBoardDto deleteBoardDto) throws SQLException;
+    int deleteBoard(DeleteBoardDto deleteBoardDto) throws SQLException;
 }

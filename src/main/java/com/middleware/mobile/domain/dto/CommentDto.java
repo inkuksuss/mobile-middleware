@@ -55,6 +55,7 @@ public class CommentDto {
         commentDto.memberId = memberId;
         commentDto.commentCreated = currentTime;
         commentDto.commentUpdated = currentTime;
+        commentDto.childCount = 0;
         commentDto.stateDel = 'N';
 
         if (form.getParentId() != null && form.getParentId() > 0) {

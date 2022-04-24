@@ -22,4 +22,8 @@ public interface CommentRepository {
     void updateComment(CommentDto commentDto) throws SQLException;
 
     void deleteComment(CommentDto commentDto) throws SQLException;
+
+    int increaseChildCount(CommentDto commentDto) throws SQLException;
+
+    int decreaseChildCount(CommentDto commentDto) throws SQLException;
 }

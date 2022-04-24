@@ -17,7 +17,7 @@ public interface CategoryRepository {
 
     Optional<CategoryDto> findCategoryById() throws SQLException;
 
-    List<CategoryDto> getCategoryList() throws SQLException;
+    List<CategoryDto> getCategoryList(CategoryDto categoryDto) throws SQLException;
 
     List<CategoryAssetDto> getCategoryAssetList(CategoryAssetDto categoryAssetDto) throws SQLException;
 

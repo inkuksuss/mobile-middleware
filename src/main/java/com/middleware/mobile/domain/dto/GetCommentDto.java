@@ -1,10 +1,14 @@
 package com.middleware.mobile.domain.dto;
 
 
+import com.middleware.mobile.web.utils.MobileValidationUtils;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.lang.Nullable;
 
 import java.sql.Timestamp;
+
+import static com.middleware.mobile.web.utils.MobileValidationUtils.*;
 
 @Getter @Setter
 public class GetCommentDto {
@@ -29,8 +33,8 @@ public class GetCommentDto {
 
     public GetCommentDto() {}
 
-    public GetCommentDto(Long memberId) {
-        this.memberId = memberId;
+    public GetCommentDto(Long boardId) {
+        this.boardId = boardId;
     }
 
     public GetCommentDto(Long boardId, Long memberId) {
@@ -42,6 +46,16 @@ public class GetCommentDto {
         GetCommentDto getCommentDto = new GetCommentDto();
         getCommentDto.boardId = boardId;
         getCommentDto.boardMemberId = boardMemberId;
+        return getCommentDto;
+    }
+
+    public static GetCommentDto parentOf(Long boardId, Long parentId, Long boardMemberId) {
+        GetCommentDto getCommentDto = new GetCommentDto();
+        getCommentDto.boardId = boardId;
+        getCommentDto.parentId = parentId;
+        if (isExist(boardMemberId)) {
+            getCommentDto.boardMemberId = boardMemberId;
+        }
         return getCommentDto;
     }
 }

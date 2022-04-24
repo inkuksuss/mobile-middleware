@@ -28,27 +28,19 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResultResponse<SessionDto> doLogin(@RequestBody LoginForm form, HttpSession httpSession) throws Exception {
+    public ResultResponse<Void> doLogin(@RequestBody LoginForm form, HttpSession httpSession) throws Exception {
         MemberDto memberDto = MemberDto.from(form);
-        MemberDto member = memberService.doLogin(memberDto);
 
-        SessionDto sessionDto = SessionDto.builder()
-                .memberId(member.getMemberId())
-                .memberName(member.getMemberName())
-                .memberEmail(member.getMemberEmail())
-                .memberAuthority(member.getMemberAuthority())
-                .build();
+        ResultResponse<SessionDto> response = memberService.doLogin(memberDto);
+        httpSession.setAttribute(Authority.MEMBER.name(), response.getData());
 
-        httpSession.setAttribute(Authority.MEMBER.name(), sessionDto);
-
-        return new ResultResponse<>(HttpStatus.OK, ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(), sessionDto);
+        return new ResultResponse<>(HttpStatus.OK, ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage());
     }
 
     @PostMapping("/join")
     public ResultResponse<Void> addMember(@RequestBody AddMemberForm form) throws Exception {
         MemberDto memberDto = MemberDto.from(form);
-        memberService.addMember(memberDto);
 
-        return new ResultResponse<>(HttpStatus.OK, ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage());
+        return memberService.addMember(memberDto);
     }
 }

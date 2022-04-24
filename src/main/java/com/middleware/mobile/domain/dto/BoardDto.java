@@ -1,10 +1,11 @@
 package com.middleware.mobile.domain.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.sql.Timestamp;
 
-@Getter
+@Getter @Setter
 public class BoardDto {
 
     private Long boardId;
@@ -18,7 +19,11 @@ public class BoardDto {
     private String boardStatus;
     private int boardScore;
     private int boardView;
-    private int stateDel;
+    private char memberAuthority;
+    private char stateDel;
+
+    private Long reqMemberId;
+    private Boolean isOwnerFlag;
 
     public BoardDto() {}
 
@@ -32,6 +37,7 @@ public class BoardDto {
         boardDto.boardTitle = categoryAssetDto.getBoardTitle();
         boardDto.boardBody = categoryAssetDto.getBoardBody();
         boardDto.boardUpdated = categoryAssetDto.getBoardUpdated();
+        boardDto.memberAuthority = categoryAssetDto.getMemberAuthority();
         boardDto.boardStatus = categoryAssetDto.getBoardStatus();
         boardDto.boardScore = categoryAssetDto.getBoardScore();
         boardDto.boardView = categoryAssetDto.getBoardView();
