@@ -4,6 +4,7 @@ import com.middleware.mobile.domain.dto.CommentDto;
 import com.middleware.mobile.domain.dto.GetCommentDto;
 import com.middleware.mobile.domain.dto.SessionDto;
 import com.middleware.mobile.domain.request.comment.AddCommentForm;
+import com.middleware.mobile.domain.request.comment.DeleteCommentForm;
 import com.middleware.mobile.domain.request.comment.UpdateCommentForm;
 import com.middleware.mobile.domain.response.ResultResponse;
 import com.middleware.mobile.web.service.CommentService;
@@ -38,18 +39,9 @@ public class CommentController {
     @PostMapping("/add/{boardId}")
     public ResultResponse<List<CommentDto>> addComment(@RequestBody AddCommentForm form, @PathVariable Long boardId, HttpSession httpSession) throws Exception {
 
-        SessionDto loginMember = MemberAuthenticationUtils.getLoginMember(httpSession);
+        Long loginMemberId = MemberAuthenticationUtils.getLoginMemberId(httpSession);
 
-        CommentDto commentDto = CommentDto.createAddCommentDto(form, loginMember.getMemberId());
-        return commentService.addComment(commentDto);
-    };
-
-    @PostMapping("/add/child/{boardId}")
-    public ResultResponse<List<CommentDto>> addChildComment(@RequestBody AddCommentForm form, @PathVariable Long boardId, HttpSession httpSession) throws Exception {
-
-        SessionDto loginMember = MemberAuthenticationUtils.getLoginMember(httpSession);
-
-        CommentDto commentDto = CommentDto.createAddCommentDto(form, loginMember.getMemberId());
+        CommentDto commentDto = CommentDto.createAddCommentDto(form, loginMemberId);
         return commentService.addComment(commentDto);
     };
 
@@ -65,9 +57,11 @@ public class CommentController {
     };
 
     @PostMapping("/delete/{commentId}")
-    public ResultResponse<List<CommentDto>> deleteComment(@PathVariable Long commentId, HttpSession httpSession) throws Exception {
-        SessionDto loginMember = MemberAuthenticationUtils.getLoginMember(httpSession);
-        CommentDto commentDto = CommentDto.createDeleteCommentDto(commentId, loginMember.getMemberId());
+    public ResultResponse<List<CommentDto>> deleteComment(@RequestBody DeleteCommentForm form, @PathVariable Long commentId, HttpSession httpSession) throws Exception {
+        Long loginMemberId = MemberAuthenticationUtils.getLoginMemberId(httpSession);
+        form.setCommentId(commentId);
+        form.setMemberId(loginMemberId);
+        CommentDto commentDto = CommentDto.createDeleteCommentDto(form);
 
         return commentService.deleteComment(commentDto);
     };

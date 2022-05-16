@@ -17,7 +17,7 @@ public interface BoardRepository {
 
     List<BoardDto> getBoardList() throws SQLException;
 
-    Optional<BoardDto> findBoardById(BoardDto boardDto) throws SQLException;
+    Optional<BoardDto> findBoardById(long boardId) throws SQLException;
 
     int addBoard(AddBoardDto addBoardDto) throws SQLException;
 

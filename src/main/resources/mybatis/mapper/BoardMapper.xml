@@ -4,7 +4,7 @@
 
 <mapper namespace="com.middleware.mobile.web.repository.BoardRepository">
 
-    <select id="findBoardById" parameterType="com.middleware.mobile.domain.dto.BoardDto" resultType="com.middleware.mobile.domain.dto.BoardDto">
+    <select id="findBoardById" parameterType="com.middleware.mobile.domain.dto.BoardDto" resultType="long">
         SELECT (
                 b.board_id,
                 b.member_id,

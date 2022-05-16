@@ -1,10 +1,14 @@
 package com.middleware.mobile.domain.dto;
 
 import com.middleware.mobile.domain.request.comment.AddCommentForm;
+import com.middleware.mobile.domain.request.comment.DeleteCommentForm;
 import com.middleware.mobile.domain.request.comment.UpdateCommentForm;
+import com.middleware.mobile.web.utils.MobileValidationUtils;
 import lombok.Getter;
 
 import java.sql.Timestamp;
+
+import static com.middleware.mobile.web.utils.MobileValidationUtils.*;
 
 @Getter
 public class CommentDto {
@@ -38,6 +42,8 @@ public class CommentDto {
     private String boardStatus;
     private char boardStateDel;
 
+    private Long reqMemberId;
+
     private CommentDto() {}
 
     public static CommentDto createGetCommentDto(Long memberId) {
@@ -57,8 +63,7 @@ public class CommentDto {
         commentDto.commentUpdated = currentTime;
         commentDto.childCount = 0;
         commentDto.stateDel = 'N';
-
-        if (form.getParentId() != null && form.getParentId() > 0) {
+        if (isExist(form.getParentId())) {
             commentDto.parentId = form.getParentId();
         }
 
@@ -72,14 +77,20 @@ public class CommentDto {
         commentDto.commentBody = form.getCommentBody();
         commentDto.commentStatus = form.getCommentStatus();
         commentDto.commentUpdated = new Timestamp(System.currentTimeMillis());
+        if (isExist(form.getParentId())) {
+            commentDto.parentId = form.getParentId();
+        }
 
         return commentDto;
     }
 
-    public static CommentDto createDeleteCommentDto(Long commentId, Long memberId) {
+    public static CommentDto createDeleteCommentDto(DeleteCommentForm form) {
         CommentDto commentDto = new CommentDto();
-        commentDto.commentId = commentId;
-        commentDto.memberId = memberId;
+        commentDto.commentId = form.getCommentId();
+        commentDto.reqMemberId = form.getMemberId();
+        if (isExist(form.getParentId())) {
+            commentDto.parentId = form.getParentId();
+        }
 
         return commentDto;
     }

@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 @Getter
 public class AddCommentForm {
     private Long boardId;
-    private String commentBody;
     private Long parentId;
+    private String commentBody;
     private String commentStatus;
 }
