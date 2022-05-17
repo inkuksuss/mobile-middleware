@@ -45,7 +45,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public ResultResponse<BoardDto> getBoard(BoardDto boardDto) throws SQLException {
-        BoardDto board = boardRepository.findBoardById(boardDto)
+        BoardDto board = boardRepository.findBoardById(boardDto.getBoardId())
                 .orElseThrow(() -> new BoardNotFoundException("존재하지 않는 게시판입니다."));
 
         return getBoardDtoResultResponse(board);

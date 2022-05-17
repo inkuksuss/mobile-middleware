@@ -8,7 +8,6 @@ import java.sql.Timestamp;
 
 @Getter @Setter
 public class CrackDto {
-
     private Long crackId;
     private Long memberId;
     private Long channelId;

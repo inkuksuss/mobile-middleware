@@ -27,11 +27,6 @@ public class CrackAssetDto {
     private String workStatus;
     private char workType;
 
-    private String channelName;
-    private String channelState;
-    private Timestamp channelCreated;
-    private Timestamp channelUpdated;
-
     private Long noticeId;
     private String noticeBody;
     private Timestamp noticeCreated;

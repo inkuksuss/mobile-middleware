@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.middleware.mobile.web.repository.CrackRepository">
+
+    <select id="getCrackList" parameterType="com.middleware.mobile.domain.dto.CrackDto" resultType="com.middleware.mobile.domain.dto.CrackDto">
+        SELECT (
+                c.crack_id,
+                c.member_id,
+                c.channel_id,
+                c.crack_name,
+                c.crack_created,
+                c.crack_updated,
+                c.crack_status,
+                c.state_del
+                )
+        FROM mobile.crack c
+        WHERE c.state_del = 'N'
+        <if test="crackId != null and crackId != ''">
+            AND c.crack_id = #{crackId}
+        </if>
+        <if test="memberId != null and memberId > 0">
+            AND c.member_id = #{memberId}
+        </if>
+        <if test="crackStatus != null and crackStatus != ''">
+            AND c.crack_status = #{crackStatus}
+        </if>
+    </select>
+
+    <insert id="insertCrack" parameterType="com.middleware.mobile.domain.dto.CrackDto">
+        INSERT INTO mobile.crack
+                            (member_id,
+                            channel_id,
+                            crack_name,
+                            crack_status
+                            )
+                            VALUES (#{memberId},
+                                    #{channelId},
+                                    #{crackName},
+                                    #{crackStatus})
+    </insert>
+
+    <update id="updateCrack" parameterType="com.middleware.mobile.domain.dto.CrackDto">
+        UPDATE
+            mobile.crack
+        SET
+            <if test="crackName != null and crackName != ''">
+                crack_name = #{crackName},
+            </if>
+            <if test="crackStatus != null and crackStatus != ''">
+                crack_status = #{crackStatus}
+            </if>
+            crack_updated = CURRENT_TIMESTAMP
+        WHERE
+            crack_id = #{crackId} AND state_del = 'N'
+    </update>
+
+    <update id="deleteCrack" parameterType="com.middleware.mobile.domain.dto.CrackDto">
+        UPDATE
+            mobile.crack
+        SET
+            crack_updated = CURRENT_TIMESTAMP,
+            state_del = 'Y'
+        WHERE
+            crack_id = #{crackId} AND state_del = 'N'
+    </update>
+</mapper>
