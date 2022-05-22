@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.middleware.mobile.web.repository.ParticipationRepository">
+
+    <select id="getParticipationList" parameterType="com.middleware.mobile.domain.dto.ParticipationDto" resultType="com.middleware.mobile.domain.dto.ParticipationDto">
+        SELECT (
+        p.member_id,
+        p.channel_id,
+        p.participation_created,
+        p.participation_updated,
+        p.participation_authority,
+        m.member_alias,
+        m.member_email,
+        m.member_student_id,
+        m.member_department,
+        m.member_authority
+        )
+        FROM mobile.participation p
+        LEFT JOIN mobile.member m on p.member_id = m.member_id
+        WHERE p.state_del = 'N' AND m.state_del = 'N'
+        <if test="channelId != null and channelId > 0">
+            AND p.channel_id = #{channelId}
+        </if>
+        <if test="memberId != null and memberId > 0">
+            AND p.member_id = #{memberId}
+        </if>
+    </select>
+
+    <insert id="insertParticipation" parameterType="com.middleware.mobile.domain.dto.ParticipationDto">
+        INSERT INTO mobile.participation
+        (
+         channel_id,
+         member_id,
+         participation_authority
+        )
+        VALUES (
+                #{channelId},
+                #{memberId},
+                #{participationAuthority}
+                )
+        <selectKey>
+                SELECT channel_id, member_id FROM mobile.participation ORDER BY participation_created DESC LIMIT 1
+        </selectKey>
+    </insert>
+
+    <update id="updateParticipation" parameterType="com.middleware.mobile.domain.dto.ParticipationDto">
+        UPDATE
+        mobile.participation
+        SET
+        <if test="participationAuthority != null and channelNparticipationAuthorityame != ''">
+            participation_authority = #{participationAuthority},
+        </if>
+        participation_updated = CURRENT_TIMESTAMP
+        WHERE state_del = 'N'
+            <if test="channelId != null and channelId > 0">
+                AND channel_id = #{channelId}
+            </if>
+            <if test="memberId != null and memberId > 0">
+                AND member_id = #{memberId}
+            </if>
+    </update>
+
+    <update id="deleteParticipation" parameterType="com.middleware.mobile.domain.dto.ParticipationDto">
+        UPDATE
+            mobile.participation
+        SET
+            participation_updated = CURRENT_TIMESTAMP,
+            state_del = 'Y'
+        WHERE state_del = 'N'
+        <if test="channelId != null and channelId > 0">
+            AND channel_id = #{channelId}
+        </if>
+        <if test="memberId != null and memberId > 0">
+            AND member_id = #{memberId}
+        </if>
+    </update>
+</mapper>

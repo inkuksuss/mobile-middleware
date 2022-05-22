@@ -13,4 +13,12 @@ public class ParticipationDto {
     private Timestamp participationUpdated;
     private String participationAuthority;
     private char stateDel;
+
+    private String memberAlias;
+    private String memberEmail;
+    private String memberStudentId;
+    private String memberDepartment;
+    private String memberAuthority;
+
+    private Long loginMemberId;
 }

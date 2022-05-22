@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpSession;
 
+import static com.middleware.mobile.web.utils.MobileValidationUtils.*;
+
 @Slf4j
 public class MemberAuthenticationUtils {
 
@@ -26,7 +28,11 @@ public class MemberAuthenticationUtils {
     public static Long getLoginMemberId(HttpSession session) {
         if (isLogin(session)) {
             SessionDto sessionDto = (SessionDto) session.getAttribute(Authority.MEMBER.name());
-            return sessionDto.getMemberId();
+            if (isExist(sessionDto.getMemberId())) {
+                return sessionDto.getMemberId();
+            } else {
+                throw new IllegalStateException("인증되지 않은 유저입니다.");
+            }
         } else {
             throw new IllegalStateException("인증되지 않은 유저입니다.");
         }

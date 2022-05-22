@@ -7,10 +7,7 @@ import com.middleware.mobile.domain.request.channel.UpdateChannelForm;
 import com.middleware.mobile.domain.response.ResultResponse;
 import com.middleware.mobile.web.service.ChannelService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -77,7 +74,7 @@ public class ChannelController {
         return channelService.updateChannel(channelDto);
     }
 
-    @PostMapping("/deleteChannel/{channelId}")
+    @GetMapping("/deleteChannel/{channelId}")
     public ResultResponse<List<ChannelDto>> deleteChannel(@PathVariable Long channelId, HttpSession session) throws Exception {
         ChannelDto channelDto = new ChannelDto();
         Long loginMemberId = getLoginMemberId(session);
