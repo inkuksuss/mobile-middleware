@@ -15,5 +15,12 @@ public class ChannelDto {
     private String channelState;
     private Timestamp channelCreated;
     private Timestamp channelUpdated;
-    private char stateDel;
+
+    private Long crackId;
+    private String crackName;
+    private String crackStatus;
+    private Timestamp crackCreated;
+    private Timestamp crackUpdated;
+
+    private Long loginMemberId;
 }

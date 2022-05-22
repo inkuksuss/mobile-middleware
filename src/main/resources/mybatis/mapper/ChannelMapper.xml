@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.middleware.mobile.web.repository.ChannelRepository">
+
+    <select id="getChannelList" parameterType="com.middleware.mobile.domain.dto.ChannelDto" resultType="com.middleware.mobile.domain.dto.ChannelDto">
+        SELECT (
+        ch.channel_id,
+        ch.member_id,
+        ch.channel_name,
+        ch.channel_state,
+        ch.chaanel_created,
+        ch.channel_updated,
+        c.crack_id,
+        c.crack_name,
+        c.crack_status,
+        c.crack_created,
+        c.crack_updated
+        )
+        FROM mobile.channel ch
+        LEFT JOIN mobile.crack c on ch.channel_id = c.channel_id
+        WHERE c.state_del = 'N' AND ch.state_del = 'N'
+        <if test="channelId != null and channelId > 0">
+            AND ch.channel_id = #{channelId}
+        </if>
+        <if test="memberId != null and memberId > 0">
+            AND ch.member_id = #{memberId}
+        </if>
+        <if test="channelState != null and channelState != ''">
+            AND ch.channel_state = #{channelState}
+        </if>
+        <if test="channelName != null and channelName != ''">
+            AND ch.channel_name = #{channelName}
+        </if>
+    </select>
+
+    <insert id="insertChannel" parameterType="com.middleware.mobile.domain.dto.ChannelDto">
+        INSERT INTO mobile.channel
+        (
+         member_id,
+         channel_name,
+         channel_state
+        )
+        VALUES (
+                #{memberId},
+                #{channelName},
+                #{channelState}
+                )
+        <selectKey>
+                SELECT channel_id FROM mobile.channel ORDER BY chaanel_created DESC LIMIT 1
+        </selectKey>
+    </insert>
+
+    <update id="updateChannel" parameterType="com.middleware.mobile.domain.dto.ChannelDto">
+        UPDATE
+        mobile.channel
+        SET
+        <if test="channelName != null and channelName != ''">
+            channel_name = #{channelName},
+        </if>
+        <if test="channelState != null and channelState != ''">
+            channel_state = #{channelState}
+        </if>
+        crack_updated = CURRENT_TIMESTAMP
+        WHERE
+        channel_id = #{channelId} AND member_id = #{loginMemberId} AND state_del = 'N'
+    </update>
+
+    <update id="deleteChannel" parameterType="com.middleware.mobile.domain.dto.ChannelDto">
+        UPDATE
+            mobile.channel
+        SET
+            channel_updated = CURRENT_TIMESTAMP,
+            state_del = 'Y'
+        WHERE
+            channel_id = #{channelId} AND member_id = #{loginMemberId} AND state_del = 'N'
+    </update>
+</mapper>
