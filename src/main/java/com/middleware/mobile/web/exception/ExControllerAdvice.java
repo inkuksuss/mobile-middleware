@@ -65,25 +65,25 @@ public class ExControllerAdvice {
         return new ResultResponse(HttpStatus.NOT_FOUND, ResultCode.PAGE_NOT_FOUND.getCode(), e.getMessage());
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler(MemberDuplicatedException.class)
     public ResultResponse memberDuplicatedExHandle(MemberDuplicatedException e) {
         log.error("[exceptionHandle] ex", e);
-        return new ResultResponse(HttpStatus.BAD_REQUEST, ResultCode.MEMBER_DUPLICATED.getCode(), e.getMessage());
+        return new ResultResponse(HttpStatus.OK, ResultCode.MEMBER_DUPLICATED.getCode(), e.getMessage());
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler(MemberNotFoundException.class)
-    public ResultResponse memberNotFoundExHandle(MemberNotFoundException e) {
+    public ResultResponse<Void> memberNotFoundExHandle(MemberNotFoundException e) {
         log.error("[exceptionHandle] ex", e);
-        return new ResultResponse(HttpStatus.BAD_REQUEST, ResultCode.MEMBER_NOT_FOUND.getCode(), e.getMessage());
+        return new ResultResponse(HttpStatus.OK, ResultCode.MEMBER_NOT_FOUND.getCode(), e.getMessage());
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler(PasswordNotCorrectException.class)
     public ResultResponse passwordNotCorrectExHandle(PasswordNotCorrectException e) {
         log.error("[exceptionHandle] ex", e);
-        return new ResultResponse(HttpStatus.BAD_REQUEST, ResultCode.PASSWORD_NOT_CORRECT.getCode(), e.getMessage());
+        return new ResultResponse(HttpStatus.OK, ResultCode.PASSWORD_NOT_CORRECT.getCode(), e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

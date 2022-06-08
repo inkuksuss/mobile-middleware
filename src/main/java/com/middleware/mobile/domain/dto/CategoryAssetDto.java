@@ -60,9 +60,9 @@ public class CategoryAssetDto {
         categoryAssetDto.page = categoryAssetDto.getPage() > 0 ? categoryAssetDto.getPage() : 1;
         categoryAssetDto.rowCount = categoryAssetDto.getRowCount() > 0 ? categoryAssetDto.getRowCount() : 10;
         categoryAssetDto.categoryName = categoryName;
-        categoryAssetDto.categoryStatus = Status.PUBLIC.getValue();
+        categoryAssetDto.categoryStatus = Status.ACTIVE.getValue();
         categoryAssetDto.boardStatus = Status.PUBLIC.getValue();
-        categoryAssetDto.memberStatus = Status.PUBLIC.getValue();
+        categoryAssetDto.memberStatus = Status.ACTIVE.getValue();
         if (isExist(reqMemberId)) {
             categoryAssetDto.reqMemberId = reqMemberId;
         }

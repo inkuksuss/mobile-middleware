@@ -10,6 +10,8 @@ import java.util.Optional;
 
 public interface CategoryService {
 
+    List<CategoryDto> getCategoryList(CategoryDto categoryDto) throws SQLException;
+
     void addCategory() throws SQLException;
 
     void updateCategory() throws SQLException;

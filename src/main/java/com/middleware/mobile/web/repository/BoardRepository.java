@@ -25,3 +25,4 @@ public interface BoardRepository {
 
     int deleteBoard(DeleteBoardDto deleteBoardDto) throws SQLException;
 }
+

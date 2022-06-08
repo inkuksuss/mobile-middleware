@@ -22,7 +22,7 @@ public class CategoryDto {
     private Long reqMemberId;
     private String type;
 
-    private CategoryDto() {};
+    public CategoryDto() {};
 
     public static CategoryDto addCategoryNameFrom(CategoryAssetDto categoryAssetDto) {
         CategoryDto categoryDto = new CategoryDto();

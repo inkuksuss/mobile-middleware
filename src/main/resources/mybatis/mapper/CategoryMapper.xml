@@ -2,7 +2,7 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.middleware.mobile.web.repository.BoardRepository">
+<mapper namespace="com.middleware.mobile.web.repository.CategoryRepository">
 
 
     <select id="findCategoryById" parameterType="Long" resultType="com.middleware.mobile.domain.dto.CategoryDto">
@@ -24,7 +24,7 @@
             c.category_name,
             c.category_status,
             c.category_created,
-            c.category_updated
+            c.category_updated,
             m.member_alias,
             m.member_authority
         FROM mobile.category c
@@ -58,40 +58,39 @@
             b.board_score,
             b.board_view,
             m.member_id,
-            m.member_alias.
-            (SELECT count(*) FROM c
-                LEFT JOIN b ON b.category_id = c.category_id
-                LEFT JOIN m ON b.member_id = m.member_id
+            m.member_alias,
+            (SELECT count(*) as totalCount FROM mobile.category c
+                LEFT JOIN mobile.board b ON b.category_id = c.category_id
+                LEFT JOIN mobile.member m ON b.member_id = m.member_id
                 WHERE c.state_del = 'N' AND b.state_del = 'N' AND m.state_del = 'N'
                 <if test="categoryName != null and categoryName != ''">
                     AND c.category_name = #{categoryName}
                 </if>
-                <if test="keyword != null and categoryStatus != ''">
+                <if test="keyword != null and keyword != ''">
                     AND (b.board_title LIKE CONCAT('%', #{keyword}, '%') OR b.board_body LIKE CONCAT('%', #{keyword}, '%'))
                 </if>
-                as totalCount
-                )
+            )
         FROM mobile.category c
             LEFT JOIN mobile.board b ON b.category_id = c.category_id
             LEFT JOIN mobile.member m ON b.member_id = m.member_id
         WHERE c.state_del = 'N' AND b.state_del = 'N' AND m.state_del = 'N'
-        <if test="categoryId != null and categoryId > 0">
+        <if test="categoryId != null and categoryId lt 0">
             AND c.category_id = #{categoryId}
         </if>
-        <if test="memberId != null and memberId > 0">
+        <if test="memberId != null and memberId lt 0">
             AND m.member_id = #{memberId}
         </if>
-        <if test="boardId != null and boardId > 0">
+        <if test="boardId != null and boardId lt 0">
             AND b.board_id = #{boardId}
         </if>
         <if test="categoryName != null and categoryName != ''">
             AND c.category_name = #{categoryName}
         </if>
-        <if test="boardStatus != null and boardStatus != ''">
+        <if test="memberStatus != null and memberStatus != ''">
             AND m.member_status = #{memberStatus}
         </if>
         <if test="boardStatus != null and boardStatus != ''">
-            AND b.board_status = #{boardStauts}
+            AND b.board_status = #{boardStatus}
         </if>
         <if test="categoryStatus != null and categoryStatus != ''">
             AND c.category_status = #{categoryStatus}
@@ -99,7 +98,7 @@
         <if test="keyword != null and categoryStatus != ''">
             AND (b.board_title LIKE CONCAT('%', #{keyword}, '%') OR b.board_body LIKE CONCAT('%', #{keyword}, '%'))
         </if>
-        <if test="rowCount != null page != null and rowCount > 0 and page > 0">
+        <if test="rowCount != null and page != null and rowCount lt 0 and page lt 0">
             LIMIT #{rowCount} OFFSET #{page}
         </if>
         ORDER BY b.board_updated DESC;

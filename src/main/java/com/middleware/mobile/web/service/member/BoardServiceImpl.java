@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +26,7 @@ public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
     private final CategoryRepository categoryRepository;
 
+
     @Override
     public ResultResponse<List<BoardDto>> getBoardList(CategoryAssetDto categoryAssetDto) throws SQLException {
 
@@ -33,9 +35,13 @@ public class BoardServiceImpl implements BoardService {
 
         if (categoryList.size() > 0) {
             List<CategoryAssetDto> categoryAssetList = categoryRepository.getCategoryAssetList(categoryAssetDto);
-            int totalCount = categoryAssetList.get(0).getTotalCount();
+            List<BoardDto> boardDtoList = new ArrayList<>();
+            int totalCount = 0;
 
-            List<BoardDto> boardDtoList = categoryAssetList.stream().map(BoardDto::from).collect(Collectors.toList());
+            if (categoryAssetList.size() > 0) {
+                boardDtoList = categoryAssetList.stream().map(BoardDto::from).collect(Collectors.toList());
+                totalCount = categoryAssetList.get(0).getTotalCount();
+            }
 
             return new ResultResponse<>(HttpStatus.OK, ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(), totalCount, boardDtoList);
         } else {

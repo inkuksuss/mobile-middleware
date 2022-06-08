@@ -12,7 +12,10 @@ import java.util.List;
 public interface NoticeRepository {
 
     List<NoticeDto> getNoticeList(NoticeDto noticeDto);
+
     int insertNotice(NoticeDto noticeDto);
+
     int updateNotice(NoticeDto noticeDto);
+
     int deleteNotice(NoticeDto noticeDto);
 }

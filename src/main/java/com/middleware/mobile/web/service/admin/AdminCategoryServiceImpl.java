@@ -21,4 +21,9 @@ public class AdminCategoryServiceImpl implements CategoryService {
 
     @Override
     public void deleteCategory() throws SQLException {}
+
+    @Override
+    public List<CategoryDto> getCategoryList(CategoryDto categoryDto) throws SQLException {
+        return null;
+    }
 }

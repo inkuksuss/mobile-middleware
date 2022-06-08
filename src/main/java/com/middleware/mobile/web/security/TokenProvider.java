@@ -66,6 +66,19 @@ public class TokenProvider {
         return memberAuthority;
     }
 
+    public Long getMemberId(String token) {
+        Claims claims = Jwts
+                .parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        Map<String, Object> member = (LinkedHashMap) claims.get(BODY);
+        Integer integer = (Integer) member.get("memberId");
+        return integer.longValue();
+    }
+
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
